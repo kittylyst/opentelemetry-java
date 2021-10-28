@@ -26,6 +26,7 @@ rootProject.name = "opentelemetry-java"
 include(":all")
 include(":api:all")
 include(":api:metrics")
+include(":api:profiler")
 include(":semconv")
 include(":bom")
 include(":bom-alpha")

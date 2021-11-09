@@ -12,7 +12,9 @@ import io.opentelemetry.api.profiler.Flamegraph;
 import io.opentelemetry.api.profiler.FlamegraphBuilder;
 import io.opentelemetry.api.profiler.JvmStackTrace;
 import io.opentelemetry.context.Context;
+import javax.annotation.concurrent.ThreadSafe;
 
+@ThreadSafe
 public class NoopExecutionProfile implements ExecutionProfile {
   private static final NoopExecutionProfile INSTANCE = new NoopExecutionProfile();
 

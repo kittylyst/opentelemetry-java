@@ -20,6 +20,7 @@ dependencies {
   api(project(":sdk:profiler"))
 
   implementation(project(":exporters:otlp:common"))
+  implementation("io.opentelemetry.proto:opentelemetry-proto")
 
   compileOnly("io.grpc:grpc-stub")
 
@@ -29,7 +30,6 @@ dependencies {
   testImplementation("io.grpc:grpc-protobuf")
   testImplementation("io.grpc:grpc-testing")
   testRuntimeOnly("io.grpc:grpc-netty-shaded")
-  testImplementation("io.opentelemetry.proto:opentelemetry-proto")
 
   add("testGrpcNettyImplementation", "com.linecorp.armeria:armeria-grpc")
   add("testGrpcNettyImplementation", "com.linecorp.armeria:armeria-junit5")

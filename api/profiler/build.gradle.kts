@@ -13,7 +13,7 @@ dependencies {
   api(project(":api:all"))
   api(project(":context"))
 
-//  annotationProcessor("com.google.auto.value:auto-value")
+  annotationProcessor("com.google.auto.value:auto-value")
 
   testImplementation("edu.berkeley.cs.jqf:jqf-fuzz")
   testImplementation("com.google.guava:guava-testlib")

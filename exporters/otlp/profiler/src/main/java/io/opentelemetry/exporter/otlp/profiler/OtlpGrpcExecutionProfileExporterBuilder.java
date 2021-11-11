@@ -26,6 +26,7 @@ public final class OtlpGrpcExecutionProfileExporterBuilder {
   private static final URI DEFAULT_ENDPOINT = URI.create(DEFAULT_ENDPOINT_URL);
   private static final long DEFAULT_TIMEOUT_SECS = 10;
 
+  @Nullable // FIXME tmp compile
   private ManagedChannel channel;
   private long timeoutNanos = TimeUnit.SECONDS.toNanos(DEFAULT_TIMEOUT_SECS);
   private URI endpoint = DEFAULT_ENDPOINT;
@@ -126,7 +127,7 @@ public final class OtlpGrpcExecutionProfileExporterBuilder {
 
       channel = managedChannelBuilder.build();
     }
-    return new OtlpGrpcExecutionProfileExporterBuilder(channel, timeoutNanos);
+    return new OtlpGrpcExecutionProfileExporter(channel, timeoutNanos);
   }
 
   OtlpGrpcExecutionProfileExporterBuilder() {}

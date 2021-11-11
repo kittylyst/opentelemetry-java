@@ -20,6 +20,7 @@ dependencies {
   api(project(":sdk:profiler"))
 
   implementation(project(":exporters:otlp:common"))
+  implementation(project(":exporters:profiler-proto"))
   implementation("io.opentelemetry.proto:opentelemetry-proto")
 
   compileOnly("io.grpc:grpc-stub")

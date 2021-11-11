@@ -18,8 +18,8 @@ import java.util.Collection;
 public interface ExecutionProfileExporter {
 
   /**
-   * Exports the collection of given profile data. Note that export operations can be
-   * performed simultaneously depending on the type of metric reader being used.
+   * Exports the collection of given profile data. Note that export operations can be performed
+   * simultaneously depending on the type of metric reader being used.
    *
    * @param metrics the collection of {@link ExecutionProfile} to be exported.
    * @return the result of the export, which is often an asynchronous operation.

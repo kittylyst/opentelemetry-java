@@ -10,7 +10,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
-import com.google.perftools.profiles.*;
 import io.opentelemetry.api.profiler.ExecutionProfile;
 import io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceRequest;
 import io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceResponse;
@@ -20,6 +19,7 @@ import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.internal.ThrottlingLogger;
 import io.opentelemetry.sdk.profiler.export.ExecutionProfileExporter;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,11 +60,10 @@ public final class OtlpGrpcExecutionProfileExporter implements ExecutionProfileE
    */
   @Override
   public CompletableResultCode export(Collection<ExecutionProfile> metrics) {
-    ProfileProto p;
 
     ExportMetricsServiceRequest exportMetricsServiceRequest =
         ExportMetricsServiceRequest.newBuilder()
-            .addAllResourceMetrics(MetricAdapter.toProtoResourceMetrics(metrics))
+            .addAllResourceMetrics(Collections.emptyList()) // FIXME Make compile tmp
             .build();
 
     final CompletableResultCode result = new CompletableResultCode();

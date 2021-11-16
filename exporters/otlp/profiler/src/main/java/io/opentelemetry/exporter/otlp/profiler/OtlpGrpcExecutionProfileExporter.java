@@ -8,18 +8,16 @@ package io.opentelemetry.exporter.otlp.profiler;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.perftools.profiles.ExecutionServiceGrpc;
+import com.google.perftools.profiles.ExportExecutionServiceRequest;
+import com.google.perftools.profiles.ExportExecutionServiceResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import io.opentelemetry.api.profiler.ExecutionProfile;
-import io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceRequest;
-import io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceResponse;
-import io.opentelemetry.proto.collector.metrics.v1.MetricsServiceGrpc;
-import io.opentelemetry.proto.collector.metrics.v1.MetricsServiceGrpc.MetricsServiceFutureStub;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.internal.ThrottlingLogger;
 import io.opentelemetry.sdk.profiler.export.ExecutionProfileExporter;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +33,7 @@ public final class OtlpGrpcExecutionProfileExporter implements ExecutionProfileE
 
   // FIXME
   // Need to add opentelemetry-proto to build
-  private final MetricsServiceFutureStub metricsService;
+  private final ExecutionServiceGrpc.ExecutionServiceFutureStub metricsService;
   private final ManagedChannel managedChannel;
   private final long timeoutNanos;
 
@@ -49,7 +47,7 @@ public final class OtlpGrpcExecutionProfileExporter implements ExecutionProfileE
   OtlpGrpcExecutionProfileExporter(ManagedChannel channel, long timeoutNanos) {
     this.managedChannel = channel;
     this.timeoutNanos = timeoutNanos;
-    metricsService = MetricsServiceGrpc.newFutureStub(channel);
+    metricsService = ExecutionServiceGrpc.newFutureStub(channel);
   }
 
   /**
@@ -61,13 +59,13 @@ public final class OtlpGrpcExecutionProfileExporter implements ExecutionProfileE
   @Override
   public CompletableResultCode export(Collection<ExecutionProfile> metrics) {
 
-    ExportMetricsServiceRequest exportMetricsServiceRequest =
-        ExportMetricsServiceRequest.newBuilder()
-            .addAllResourceMetrics(Collections.emptyList()) // FIXME Make compile tmp
+    ExportExecutionServiceRequest exportMetricsServiceRequest =
+        ExportExecutionServiceRequest.newBuilder()
+            .addAllResourceMetrics(ExecutionProfileAdapter.toProtoResourceMetrics(metrics))
             .build();
 
     final CompletableResultCode result = new CompletableResultCode();
-    MetricsServiceFutureStub exporter;
+    ExecutionServiceGrpc.ExecutionServiceFutureStub exporter;
     if (timeoutNanos > 0) {
       exporter = metricsService.withDeadlineAfter(timeoutNanos, TimeUnit.NANOSECONDS);
     } else {
@@ -76,9 +74,9 @@ public final class OtlpGrpcExecutionProfileExporter implements ExecutionProfileE
 
     Futures.addCallback(
         exporter.export(exportMetricsServiceRequest),
-        new FutureCallback<ExportMetricsServiceResponse>() {
+        new FutureCallback<ExportExecutionServiceResponse>() {
           @Override
-          public void onSuccess(@Nullable ExportMetricsServiceResponse response) {
+          public void onSuccess(@Nullable ExportExecutionServiceResponse response) {
             result.succeed();
           }
 
